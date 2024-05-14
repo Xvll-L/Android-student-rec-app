@@ -3,27 +3,32 @@ package com.example.studnetrecordmobleapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.studnetrecordmobleapplication.ui.theme.StudnetRecordMobleApplicationTheme
 
+
 class MainActivity : ComponentActivity() {
+    private lateinit var database: Database
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val database = Database(this)
+        database = Database(this)
+
         setContent {
             StudnetRecordMobleApplicationTheme {
-                // A surface container using the 'background' color from the theme
-                loginpage();
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "login") {
+                    composable("login") { loginpage(navController, database) }
+                    composable("registration") { registration(navController, database) }
 
                 }
             }
         }
-
-
+    }
 }
