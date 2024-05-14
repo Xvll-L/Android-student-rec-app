@@ -15,10 +15,12 @@ import com.example.studnetrecordmobleapplication.ui.theme.StudnetRecordMobleAppl
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val database = Database(this)
         setContent {
             StudnetRecordMobleApplicationTheme {
                 // A surface container using the 'background' color from the theme
-                loginpage()
+                loginpage();
+
                 }
             }
         }

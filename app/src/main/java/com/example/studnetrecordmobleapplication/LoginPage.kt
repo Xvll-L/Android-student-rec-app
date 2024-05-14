@@ -16,40 +16,52 @@ fun loginpage() {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .background(Color(0xFFFFA500)),
-        verticalArrangement = Arrangement.Center
+           // .background(Color(0xFFFFA500))
     ) {
-        Text(text = "Login", style = MaterialTheme.typography.titleLarge)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { /* Handle login logic here */ },
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Login")
+            Text(text = "Login", style = MaterialTheme.typography.titleLarge)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Username") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { /* loogin */ },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Login")
+            }
+
+            Button(
+                onClick = { /* sign */ },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "siin up")
+            }
         }
     }
 }
