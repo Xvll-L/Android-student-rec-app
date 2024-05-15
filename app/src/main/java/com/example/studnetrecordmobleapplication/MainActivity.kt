@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "login") {
                     composable("login") { loginpage(navController, database) }
                     composable("registration") { registration(navController, database) }
-
+                    composable("studentRecords") { StudentRec(navController, database) }
                 }
             }
         }
