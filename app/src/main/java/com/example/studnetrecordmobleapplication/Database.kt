@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "school.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2 // Updated version
 
         // User Table
         const val TABLE_USER = "User"
@@ -35,9 +35,36 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 "$COLUMN_MARK INTEGER)"
     }
 
+    // Default data class for students
+    data class StudentRec(val id: Int, val name: String, val mark: Int)
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_USER_TABLE)
         db.execSQL(CREATE_STUDENT_TABLE)
+
+        // Insert admin user
+        val adminValues = ContentValues().apply {
+            put(COLUMN_USERNAME, "admin")
+            put(COLUMN_PASSWORD, "admin")
+        }
+        db.insert(TABLE_USER, null, adminValues)
+
+        // Insert default student data
+        val defaultStudents = listOf(
+            StudentRec(1, "Jane Doe", 93),
+            StudentRec(2, "John Doe", 92),
+            StudentRec(3, "Ahmed Mohamed", 100),
+            StudentRec(4, "Homer  Simpson", 29),
+            StudentRec(5, "SpongeBob  SquarePants", 95)
+        )
+
+        for (student in defaultStudents) {
+            val studentValues = ContentValues().apply {
+                put(COLUMN_STUDENT_NAME, student.name)
+                put(COLUMN_MARK, student.mark)
+            }
+            db.insert(TABLE_STUDENT, null, studentValues)
+        }
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -72,30 +99,52 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.delete(TABLE_STUDENT, "$COLUMN_STUDENT_ID = ?", arrayOf(studentId.toString()))
     }
 
-   // Retrieve all student records from the database
-   fun getAllStudents(): List<StudentRecord> {
-       val studentList = mutableListOf<StudentRecord>()
-       val db = readableDatabase
-       val cursor = db.query(
-           TABLE_STUDENT,
-           arrayOf(COLUMN_STUDENT_ID, COLUMN_STUDENT_NAME, COLUMN_MARK),
-           null,
-           null,
-           null,
-           null,
-           null
-       )
-       with(cursor) {
-           while (moveToNext()) {
-               val id = getInt(getColumnIndexOrThrow(COLUMN_STUDENT_ID))
-               val name = getString(getColumnIndexOrThrow(COLUMN_STUDENT_NAME))
-               val mark = getInt(getColumnIndexOrThrow(COLUMN_MARK))
-               studentList.add(StudentRecord(id, name, mark))
-           }
-       }
-       cursor.close()
-       return studentList
-   }
+    // Retrieve all student records from the database
+    fun getAllStudents(): List<StudentRec> {
+        val studentList = mutableListOf<StudentRec>()
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_STUDENT,
+            arrayOf(COLUMN_STUDENT_ID, COLUMN_STUDENT_NAME, COLUMN_MARK),
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+        with(cursor) {
+            while (moveToNext()) {
+                val id = getInt(getColumnIndexOrThrow(COLUMN_STUDENT_ID))
+                val name = getString(getColumnIndexOrThrow(COLUMN_STUDENT_NAME))
+                val mark = getInt(getColumnIndexOrThrow(COLUMN_MARK))
+                studentList.add(StudentRec(id, name, mark))
+            }
+        }
+        cursor.close()
+        return studentList
+    }
+    fun getStudentById(studentId: Int): StudentRec? {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_STUDENT,
+            arrayOf(COLUMN_STUDENT_ID, COLUMN_STUDENT_NAME, COLUMN_MARK),
+            "$COLUMN_STUDENT_ID = ?",
+            arrayOf(studentId.toString()),
+            null,
+            null,
+            null
+        )
+        return if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STUDENT_ID))
+            val name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STUDENT_NAME))
+            val mark = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MARK))
+            cursor.close()
+            StudentRec(id, name, mark)
+        } else {
+            cursor.close()
+            null
+        }
+    }
 
     // Insert a new user account into the database
     fun insertUser(username: String, password: String) {
@@ -141,5 +190,3 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return isAuthenticated
     }
 }
-
-data class StudentRec(val id: Int, val name: String, val mark: Int)

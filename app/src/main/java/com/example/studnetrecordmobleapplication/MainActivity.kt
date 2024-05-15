@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
                     composable("login") { loginpage(navController, database) }
                     composable("registration") { registration(navController, database) }
                     composable("studentRecords") { StudentRec(navController, database) }
+                    composable("addStudent") { AddStudent(navController, database)  }
                 }
             }
         }

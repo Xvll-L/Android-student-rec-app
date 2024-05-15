@@ -5,20 +5,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-
 
 @Composable
 fun registration(navController: NavController, database: Database) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var registrationResult by remember { mutableStateOf<String?>(null) }
 
     Box(
         modifier = Modifier
@@ -62,7 +60,19 @@ fun registration(navController: NavController, database: Database) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* Handle registration logic */ },
+                onClick = {
+                    if (password == confirmPassword) {
+                        if (!database.isUsernameTaken(username)) {
+                            database.insertUser(username, password)
+                            registrationResult = "Registration successful"
+                            navController.navigate("login")
+                        } else {
+                            registrationResult = "Username already taken"
+                        }
+                    } else {
+                        registrationResult = "Passwords do not match"
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Register")
@@ -71,10 +81,15 @@ fun registration(navController: NavController, database: Database) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /*navController.navigate("login") */},
+                onClick = { navController.navigate("login") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Back to Login")
+            }
+
+            registrationResult?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = it, color = if (it == "Registration successful") Color.Green else Color.Red)
             }
         }
     }

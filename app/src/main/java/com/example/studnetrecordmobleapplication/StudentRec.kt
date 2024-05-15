@@ -16,9 +16,52 @@ import kotlinx.coroutines.withContext
 fun StudentRec(navController: NavController, database: Database) {
     val studentRecords = remember { mutableStateListOf<StudentRecord>() }
 
-    // Retrieve student records from the database in a side effect
+
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(studentRecords) { record ->
+                Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                    Text(text = record.id.toString(), modifier = Modifier.weight(1f))
+                    Text(text = record.name, modifier = Modifier.weight(3f))
+                    Text(text = record.mark.toString(), modifier = Modifier.weight(1f))
+
+                    Button(
+                        onClick = {
+                            // Navigate to update student screen
+                            navController.navigate("updateStudent/${record.id}")
+                        },
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text(text = "Update")
+                    }
+
+                    Button(
+                        onClick = {
+                           //detlet user
+                        },
+                        modifier = Modifier.padding(start = 8.dp)
+                    ) {
+                        Text(text = "Delete")
+                    }
+                }
+            }
+        }
+
+        Button(
+            onClick = { navController.navigate("addStudent") },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        ) {
+            Text(text = "Add new student and mark")
+        }
+    }
+}
+
+@Composable
+fun refreshStudentRecords(database: Database, studentRecords: MutableList<StudentRecord>) {
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
+            studentRecords.clear()
             val cursor = database.readableDatabase.query(
                 Database.TABLE_STUDENT,
                 null,
@@ -35,25 +78,6 @@ fun StudentRec(navController: NavController, database: Database) {
                 studentRecords.add(StudentRecord(id, name, mark))
             }
             cursor.close()
-        }
-    }
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(studentRecords) { record ->
-                Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Text(text = record.id.toString(), modifier = Modifier.weight(1f))
-                    Text(text = record.name, modifier = Modifier.weight(3f))
-                    Text(text = record.mark.toString(), modifier = Modifier.weight(1f))
-                }
-            }
-        }
-
-        Button(
-            onClick = { navController.navigate("addStudent") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        ) {
-            Text(text = "Add new student and mark")
         }
     }
 }

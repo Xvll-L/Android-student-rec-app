@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 fun loginpage(navController: NavController, database: Database) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var failLog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -51,8 +52,23 @@ fun loginpage(navController: NavController, database: Database) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            if (failLog) {
+                Text(
+                    text = "Invalid username or password",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             Button(
-                onClick = { /* Handle login logic */ },
+                onClick = {
+                          if(database.authenticateUser(username, password)){
+                              navController.navigate("studentRecords")
+                          } else{
+                              failLog =true
+                          }
+
+                          },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Login")
