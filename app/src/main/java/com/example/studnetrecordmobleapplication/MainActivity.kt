@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.studnetrecordmobleapplication.ui.theme.StudnetRecordMobleApplicationTheme
 
-
 class MainActivity : ComponentActivity() {
     private lateinit var database: Database
 
@@ -27,7 +26,11 @@ class MainActivity : ComponentActivity() {
                     composable("login") { loginpage(navController, database) }
                     composable("registration") { registration(navController, database) }
                     composable("studentRecords") { StudentRec(navController, database) }
-                    composable("addStudent") { AddStudent(navController, database)  }
+                    composable("addStudent") { AddStudent(navController, database) }
+                    composable("updateStudent/{studentId}") { backStackEntry ->
+                        val studentId = backStackEntry.arguments?.getString("studentId")?.toInt() ?: 0
+                        updateRec(navController, database, studentId)
+                    }
                 }
             }
         }
