@@ -17,6 +17,7 @@ fun loginpage(navController: NavController, database: Database) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var failLog by remember { mutableStateOf(false) }
+    var successLog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -72,11 +73,22 @@ fun loginpage(navController: NavController, database: Database) {
                 )
             }
 
+            if (successLog) {
+                Text(
+                    text = "Login successful",
+                    color = Color.Green,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             Button(
                 onClick = {
                     if (database.authenticateUser(username, password)) {
                         navController.navigate("studentRecords")
+                        successLog = true
+                        failLog = false
                     } else {
+                        successLog = false
                         failLog = true
                     }
                 },
