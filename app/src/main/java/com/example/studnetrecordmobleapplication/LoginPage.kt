@@ -1,18 +1,17 @@
 package com.example.studnetrecordmobleapplication
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun loginpage(navController: NavController, database: Database) {
     var username by remember { mutableStateOf("") }
@@ -22,7 +21,6 @@ fun loginpage(navController: NavController, database: Database) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-        // .background(Color(0xFFFFA500))
     ) {
         Column(
             modifier = Modifier
@@ -30,7 +28,11 @@ fun loginpage(navController: NavController, database: Database) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Login", style = MaterialTheme.typography.titleLarge)
+            Text(text = "Login", style = MaterialTheme.typography.titleLarge,  color = Color(0xFFFFA500),
+                    fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+                //textAlign = TextAlign.Center
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -38,7 +40,12 @@ fun loginpage(navController: NavController, database: Database) {
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Username") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xFFFFA500),
+                    unfocusedBorderColor = Color(0xFFFFA500),
+                    cursorColor = Color(0xFFFFA500)
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -47,7 +54,12 @@ fun loginpage(navController: NavController, database: Database) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color(0xFFFFA500),
+                    unfocusedBorderColor = Color(0xFFFFA500),
+                    cursorColor = Color(0xFFFFA500)
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -62,14 +74,16 @@ fun loginpage(navController: NavController, database: Database) {
 
             Button(
                 onClick = {
-                          if(database.authenticateUser(username, password)){
-                              navController.navigate("studentRecords")
-                          } else{
-                              failLog =true
-                          }
-
-                          },
-                modifier = Modifier.fillMaxWidth()
+                    if (database.authenticateUser(username, password)) {
+                        navController.navigate("studentRecords")
+                    } else {
+                        failLog = true
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFA500)
+                )
             ) {
                 Text(text = "Login")
             }
@@ -78,7 +92,10 @@ fun loginpage(navController: NavController, database: Database) {
 
             Button(
                 onClick = { navController.navigate("registration") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFFA500)
+                )
             ) {
                 Text(text = "Sign Up")
             }

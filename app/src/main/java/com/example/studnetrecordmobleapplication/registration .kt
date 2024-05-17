@@ -61,16 +61,27 @@ fun registration(navController: NavController, database: Database) {
 
             Button(
                 onClick = {
-                    if (password == confirmPassword) {
-                        if (!database.isUsernameTaken(username)) {
+                    when {
+                        username.isBlank() -> {
+                            registrationResult = "Username cannot be empty"
+                        }
+                        password.isBlank() -> {
+                            registrationResult = "Password cannot be empty"
+                        }
+                        confirmPassword.isBlank() -> {
+                            registrationResult = "Confirm Password cannot be empty"
+                        }
+                        password != confirmPassword -> {
+                            registrationResult = "Passwords do not match"
+                        }
+                        database.isUsernameTaken(username) -> {
+                            registrationResult = "Username already taken"
+                        }
+                        else -> {
                             database.insertUser(username, password)
                             registrationResult = "Registration successful"
                             navController.navigate("login")
-                        } else {
-                            registrationResult = "Username already taken"
                         }
-                    } else {
-                        registrationResult = "Passwords do not match"
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
