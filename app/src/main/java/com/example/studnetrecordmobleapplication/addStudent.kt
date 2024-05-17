@@ -46,9 +46,8 @@ fun AddStudent(navController: NavController, database: Database) {
             onClick = {
                 val mark = studentMark.toIntOrNull()
                 if (studentName.isNotBlank() && mark != null) {
-                    // Insert the new student record into the database
+
                     database.insertStudent(studentName, mark)
-                    // Navigate back to the student record screen
                     navController.navigateUp()
                 }
             },

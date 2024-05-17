@@ -54,9 +54,7 @@ fun updateRec(navController: NavController, database: Database, studentId: Int) 
             onClick = {
                 val mark = studentMark.toIntOrNull()
                 if (studentName.isNotBlank() && mark != null) {
-                    // Update the student record in the database
                     database.updateStudent(studentId, studentName, mark)
-                    // Navigate back to the student record screen
                     navController.navigateUp()
                 }
             },
